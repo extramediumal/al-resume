@@ -1,0 +1,1758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AL HARRIS — Solutions & Automation</title>
+  <style>
+    /* ============================================
+       DESIGN LANGUAGE: landonorris.com — FULL SEND
+       ============================================ */
+
+    @font-face {
+      font-family: 'Mona Sans';
+      src: url('https://github.com/mona-sans/raw/main/fonts/webfonts/MonaSans%5Bwdth%2Cwght%5D.woff2') format('woff2');
+      font-weight: 200 900;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    :root {
+      --color-cream: #f4f4ed;
+      --color-dark-green: #282c20;
+      --color-black: #111112;
+      --color-lime: #d2ff00;
+      --color-lime-off: #b2c73a;
+      --color-green-off-1: #dde1d2;
+      --color-green-off-2: #b4b8a5;
+      --color-dark-tint-1: #3b3c38;
+      --color-dark-tint-2: #535450;
+
+      --font-body: 'Mona Sans', -apple-system, 'Segoe UI', sans-serif;
+      --font-display: Georgia, 'Times New Roman', serif;
+
+      --gap: 1.25rem;
+      --padding-container: clamp(1.25rem, 4vw, 2rem);
+      --padding-section: clamp(4rem, 10vw, 8rem);
+
+      --ease: cubic-bezier(0.65, 0.05, 0, 1);
+      --ease-out: cubic-bezier(0.19, 1, 0.22, 1);
+      --duration: 0.75s;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    ::selection {
+      background: var(--color-lime);
+      color: var(--color-dark-green);
+    }
+
+    html {
+      font-size: clamp(14px, 1.1vw, 18px);
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--color-dark-green);
+      color: var(--color-cream);
+      line-height: 1.5;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      cursor: none;
+    }
+
+    /* ============================================
+       CUSTOM CURSOR
+       ============================================ */
+
+    .cursor {
+      position: fixed;
+      width: 12px;
+      height: 12px;
+      background: var(--color-lime);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99999;
+      mix-blend-mode: difference;
+      transition: transform 0.15s var(--ease);
+      transform: translate(-50%, -50%);
+    }
+
+    .cursor.hovering {
+      transform: translate(-50%, -50%) scale(3);
+      opacity: 0.6;
+    }
+
+    .cursor-trail {
+      position: fixed;
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--color-lime);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99998;
+      opacity: 0.3;
+      transition: transform 0.4s var(--ease-out), opacity 0.3s;
+      transform: translate(-50%, -50%);
+    }
+
+    /* ============================================
+       GRAIN OVERLAY
+       ============================================ */
+
+    .grain {
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      pointer-events: none;
+      opacity: 0.035;
+      z-index: 10000;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      animation: grainShift 0.5s steps(4) infinite;
+    }
+
+    @keyframes grainShift {
+      0% { transform: translate(0, 0); }
+      25% { transform: translate(-2%, -3%); }
+      50% { transform: translate(1%, 2%); }
+      75% { transform: translate(-1%, 1%); }
+      100% { transform: translate(2%, -2%); }
+    }
+
+    /* ============================================
+       LAYOUT
+       ============================================ */
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 var(--padding-container);
+    }
+
+    section {
+      padding: var(--padding-section) 0;
+      position: relative;
+    }
+
+    /* ============================================
+       GEOMETRIC DECORATIONS
+       ============================================ */
+
+    .geo {
+      position: absolute;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .geo-circle {
+      border-radius: 50%;
+      border: 1px solid rgba(210, 255, 0, 0.08);
+    }
+
+    .geo-cross {
+      color: rgba(210, 255, 0, 0.1);
+      font-size: 2rem;
+      font-weight: 200;
+      line-height: 1;
+    }
+
+    .geo-line {
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(210, 255, 0, 0.08), transparent);
+    }
+
+    .geo-dot-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 4px);
+      gap: 8px;
+    }
+
+    .geo-dot-grid span {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: rgba(210, 255, 0, 0.1);
+    }
+
+    /* ============================================
+       NAV
+       ============================================ */
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 120;
+      padding: 1.25rem var(--padding-container);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      mix-blend-mode: difference;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    nav a {
+      color: var(--color-cream);
+      text-decoration: none;
+      transition: color var(--duration) var(--ease);
+      cursor: none;
+    }
+
+    nav a:hover { color: var(--color-lime); }
+
+    .nav-links { display: flex; gap: 2rem; }
+
+    .nav-link {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: var(--color-lime);
+      transform: translateX(-101%);
+      transition: transform 0.4s var(--ease);
+    }
+
+    .nav-link:hover::after {
+      transform: translateX(0);
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--color-lime);
+      margin-right: 0.5rem;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    /* ============================================
+       HERO
+       ============================================ */
+
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      padding-top: 6rem;
+      overflow: hidden;
+    }
+
+    .hero-glow {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 50% -190%, rgba(210, 255, 0, 0) 68%, rgba(210, 255, 0, 0.08) 83%);
+      pointer-events: none;
+    }
+
+    .hero-glow-orb {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(210, 255, 0, 0.03) 0%, transparent 70%);
+      top: -200px;
+      right: -100px;
+      pointer-events: none;
+      animation: orbFloat 8s ease-in-out infinite;
+    }
+
+    @keyframes orbFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(-30px, 20px) scale(1.1); }
+    }
+
+    .hero-eyebrow {
+      font-size: 0.578rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--color-lime);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: slideUp 0.8s var(--ease) 0.2s forwards;
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(4.5rem, 14vw, 10rem);
+      font-weight: 700;
+      line-height: 0.85;
+      color: var(--color-cream);
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .hero h1 .scramble-text {
+      display: inline-block;
+    }
+
+    .hero h1 .accent {
+      color: var(--color-lime);
+      font-style: italic;
+      display: inline-block;
+      animation: accentPop 0.6s var(--ease) 1.5s both;
+    }
+
+    @keyframes accentPop {
+      0% { transform: scale(0) rotate(-20deg); opacity: 0; }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    /* Giant watermark behind hero */
+    .hero-watermark {
+      position: absolute;
+      right: -5%;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: var(--font-display);
+      font-size: clamp(15rem, 30vw, 35rem);
+      font-weight: 700;
+      color: rgba(210, 255, 0, 0.03);
+      line-height: 0.8;
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 0;
+    }
+
+    .hero .container {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+      color: var(--color-green-off-2);
+      max-width: 640px;
+      line-height: 1.4;
+      margin-bottom: 3rem;
+      font-weight: 400;
+      opacity: 0;
+      animation: slideUp 0.8s var(--ease) 0.8s forwards;
+    }
+
+    .hero-cta-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      opacity: 0;
+      animation: slideUp 0.8s var(--ease) 1.0s forwards;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .btn-primary, .btn-secondary {
+      cursor: none;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 2.5rem;
+      background: var(--color-lime);
+      color: var(--color-dark-green);
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 0.875rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border-radius: 6px;
+      border: none;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s var(--ease);
+    }
+
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.6s var(--ease), height 0.6s var(--ease);
+    }
+
+    .btn-primary:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .btn-primary:hover {
+      transform: scale(1.05);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 2.5rem;
+      background: transparent;
+      color: var(--color-cream);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      letter-spacing: 0.05em;
+      border: 1px solid var(--color-dark-tint-2);
+      border-radius: 6px;
+      transition: all var(--duration) var(--ease);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--color-lime);
+      color: var(--color-lime);
+    }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--color-dark-tint-2);
+      font-size: 0.625rem;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      animation: scrollBounce 2s var(--ease) infinite;
+    }
+
+    @keyframes scrollBounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(8px); }
+    }
+
+    .scroll-indicator .line {
+      width: 1px;
+      height: 48px;
+      background: linear-gradient(to bottom, var(--color-dark-tint-2), transparent);
+    }
+
+    /* ============================================
+       MARQUEE STRIP
+       ============================================ */
+
+    .marquee {
+      overflow: hidden;
+      white-space: nowrap;
+      border-top: 1px solid var(--color-dark-tint-1);
+      border-bottom: 1px solid var(--color-dark-tint-1);
+      padding: 1rem 0;
+      background: var(--color-dark-green);
+    }
+
+    .marquee-inner {
+      display: inline-flex;
+      animation: marqueeScroll 30s linear infinite;
+    }
+
+    .marquee:hover .marquee-inner {
+      animation-play-state: paused;
+    }
+
+    .marquee-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 2rem;
+      padding: 0 2rem;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-dark-tint-2);
+    }
+
+    .marquee-item .sep {
+      color: var(--color-lime);
+      font-size: 0.5em;
+    }
+
+    .marquee-item .highlight {
+      color: var(--color-lime);
+    }
+
+    @keyframes marqueeScroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ============================================
+       STATS BAR
+       ============================================ */
+
+    .stats-section {
+      background: var(--color-black);
+      border-bottom: 1px solid var(--color-dark-tint-1);
+      overflow: hidden;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+    }
+
+    .stat-card {
+      padding: 2.5rem 2rem;
+      background: var(--color-dark-green);
+      text-align: center;
+      transition: background var(--duration) var(--ease);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--color-lime);
+      transform: scaleX(0);
+      transition: transform var(--duration) var(--ease);
+    }
+
+    .stat-card:hover::after {
+      transform: scaleX(1);
+    }
+
+    .stat-card:hover {
+      background: var(--color-dark-tint-1);
+    }
+
+    .stat-value {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      color: var(--color-lime);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--color-dark-tint-2);
+    }
+
+    /* ============================================
+       SECTION HEADERS
+       ============================================ */
+
+    .section-eyebrow {
+      font-size: 0.578rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--color-lime);
+      margin-bottom: 3rem;
+    }
+
+    /* ============================================
+       CLIP-PATH REVEAL SECTIONS
+       ============================================ */
+
+    .clip-reveal {
+      clip-path: inset(8% 4% 8% 4% round 12px);
+      transition: clip-path 1s var(--ease);
+    }
+
+    .clip-reveal.revealed {
+      clip-path: inset(0% 0% 0% 0% round 0px);
+    }
+
+    /* ============================================
+       PARALLAX WATERMARK TEXT
+       ============================================ */
+
+    .parallax-text {
+      font-family: var(--font-display);
+      font-size: clamp(6rem, 15vw, 14rem);
+      font-weight: 700;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(210, 255, 0, 0.08);
+      white-space: nowrap;
+      position: absolute;
+      pointer-events: none;
+      z-index: 0;
+      will-change: transform;
+    }
+
+    /* ============================================
+       TIMELINE
+       ============================================ */
+
+    .timeline-section {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .timeline-section .parallax-text {
+      top: 10%;
+      left: -10%;
+    }
+
+    .timeline-section .container {
+      position: relative;
+      z-index: 1;
+    }
+
+    .timeline {
+      position: relative;
+      padding-left: 3rem;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0.5rem;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--color-lime), var(--color-dark-tint-1));
+    }
+
+    /* Animated line that grows as you scroll */
+    .timeline-progress {
+      position: absolute;
+      left: 0.5rem;
+      top: 0;
+      width: 2px;
+      height: 0;
+      background: var(--color-lime);
+      box-shadow: 0 0 8px rgba(210, 255, 0, 0.4);
+      transition: height 0.1s linear;
+      z-index: 1;
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 3rem;
+      cursor: default;
+      opacity: 0;
+      transform: translateX(-20px);
+      transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+    }
+
+    .timeline-item.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: -2.5rem;
+      top: 0.35rem;
+      width: 1rem;
+      height: 1rem;
+      border-radius: 50%;
+      background: var(--color-dark-tint-1);
+      border: 2px solid var(--color-dark-green);
+      transition: all 0.3s var(--ease);
+    }
+
+    .timeline-item:last-child .timeline-dot,
+    .timeline-item:hover .timeline-dot {
+      background: var(--color-lime);
+      box-shadow: 0 0 20px rgba(210, 255, 0, 0.5);
+    }
+
+    .timeline-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .timeline-year {
+      font-size: 0.875rem;
+      font-weight: 800;
+      color: var(--color-lime);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .timeline-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--color-cream);
+    }
+
+    .timeline-place {
+      font-size: 0.8125rem;
+      color: var(--color-dark-tint-2);
+    }
+
+    .timeline-desc {
+      color: var(--color-green-off-2);
+      max-width: 600px;
+      transition: all 0.4s var(--ease);
+    }
+
+    .timeline-item:hover .timeline-desc {
+      color: var(--color-green-off-1);
+      transform: translateX(4px);
+    }
+
+    /* ============================================
+       PROJECTS
+       ============================================ */
+
+    .projects-section {
+      background: var(--color-black);
+      border-top: 1px solid var(--color-dark-tint-1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .projects-section .parallax-text {
+      bottom: 5%;
+      right: -5%;
+    }
+
+    .projects-section .container {
+      position: relative;
+      z-index: 1;
+    }
+
+    .projects-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 3rem;
+    }
+
+    .filter-group { display: flex; gap: 0.5rem; }
+
+    .filter-btn {
+      padding: 0.5rem 1.25rem;
+      background: transparent;
+      color: var(--color-green-off-2);
+      border: 1px solid var(--color-dark-tint-1);
+      border-radius: 6px;
+      cursor: none;
+      font-family: var(--font-body);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s var(--ease);
+    }
+
+    .filter-btn:hover {
+      border-color: var(--color-dark-tint-2);
+      color: var(--color-cream);
+    }
+
+    .filter-btn.active {
+      background: var(--color-lime);
+      color: var(--color-dark-green);
+      border-color: var(--color-lime);
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: var(--gap);
+    }
+
+    /* 3D perspective tilt cards */
+    .project-card {
+      padding: 2rem;
+      background: var(--color-dark-green);
+      border: 1px solid var(--color-dark-tint-1);
+      border-radius: 6px;
+      transition: border-color var(--duration) var(--ease), box-shadow 0.4s var(--ease);
+      transform-style: preserve-3d;
+      perspective: 800px;
+      cursor: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(210, 255, 0, 0.04) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.4s;
+      pointer-events: none;
+    }
+
+    .project-card:hover::before {
+      opacity: 1;
+    }
+
+    .project-card:hover {
+      border-color: var(--color-lime);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .project-card-inner {
+      transform: translateZ(0);
+      transition: transform 0.3s var(--ease-out);
+    }
+
+    .project-category {
+      display: inline-block;
+      font-size: 0.578rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      padding: 0.25rem 0.625rem;
+      border: 1px solid;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+    }
+
+    .cat-ai { color: var(--color-lime); border-color: var(--color-lime); }
+    .cat-analytics { color: var(--color-lime-off); border-color: var(--color-lime-off); }
+    .cat-platform { color: var(--color-green-off-1); border-color: var(--color-green-off-1); }
+
+    .project-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--color-cream);
+      margin-bottom: 0.75rem;
+    }
+
+    .project-desc {
+      font-size: 0.875rem;
+      color: var(--color-green-off-2);
+      line-height: 1.65;
+      margin-bottom: 1rem;
+    }
+
+    .tech-tags { display: flex; flex-wrap: wrap; gap: 0.375rem; margin-bottom: 1.25rem; }
+
+    .tech-tag {
+      font-size: 0.625rem;
+      font-weight: 700;
+      color: var(--color-dark-tint-2);
+      padding: 0.25rem 0.5rem;
+      background: var(--color-black);
+      border-radius: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      transition: all 0.2s var(--ease);
+    }
+
+    .tech-tag:hover {
+      background: var(--color-lime);
+      color: var(--color-dark-green);
+    }
+
+    .project-impact {
+      font-size: 0.8125rem;
+      color: var(--color-lime-off);
+      font-weight: 600;
+      padding-top: 1rem;
+      border-top: 1px solid var(--color-dark-tint-1);
+    }
+
+    /* Staggered card entrance */
+    .project-card {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s var(--ease), transform 0.6s var(--ease), border-color var(--duration) var(--ease), box-shadow 0.4s var(--ease);
+    }
+
+    .project-card.card-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ============================================
+       SECOND MARQUEE (between projects & tech)
+       ============================================ */
+
+    .marquee-reverse .marquee-inner {
+      animation-direction: reverse;
+    }
+
+    /* ============================================
+       TECH STACK
+       ============================================ */
+
+    .tech-section {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tech-section .container {
+      position: relative;
+      z-index: 1;
+    }
+
+    .tech-intro {
+      color: var(--color-dark-tint-2);
+      max-width: 560px;
+      margin-bottom: 2.5rem;
+      line-height: 1.6;
+    }
+
+    .tech-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .tech-chip {
+      padding: 0.75rem 1.5rem;
+      background: var(--color-black);
+      border: 1px solid var(--color-dark-tint-1);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      transition: all 0.3s var(--ease);
+      cursor: none;
+      opacity: 0;
+      transform: scale(0.9);
+    }
+
+    .tech-chip.chip-visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .tech-chip:hover {
+      border-color: var(--color-lime);
+      transform: scale(1.05) !important;
+      box-shadow: 0 0 20px rgba(210, 255, 0, 0.1);
+    }
+
+    .tech-chip.expert {
+      background: rgba(210, 255, 0, 0.05);
+      border-color: var(--color-lime);
+    }
+
+    .tech-chip-name {
+      font-weight: 600;
+      color: var(--color-cream);
+      font-size: 0.875rem;
+    }
+
+    .tech-chip-level {
+      font-size: 0.578rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-dark-tint-2);
+    }
+
+    .tech-chip.expert .tech-chip-level {
+      color: var(--color-lime);
+    }
+
+    /* ============================================
+       THE PITCH
+       ============================================ */
+
+    .pitch-section {
+      background: var(--color-black);
+      border-top: 1px solid var(--color-dark-tint-1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pitch-section .container {
+      position: relative;
+      z-index: 1;
+    }
+
+    .pitch-content { max-width: 800px; }
+
+    .pitch-statements {
+      font-size: clamp(1.25rem, 3vw, 1.6rem);
+      line-height: 1.7;
+      margin-bottom: 3rem;
+    }
+
+    .pitch-statements p {
+      margin-bottom: 1.25rem;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s var(--ease);
+    }
+
+    .pitch-statements p.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .highlight-lime { color: var(--color-lime); font-weight: 700; }
+    .highlight-off { color: var(--color-lime-off); font-weight: 700; }
+    .highlight-cream { color: var(--color-green-off-1); font-weight: 700; }
+
+    .pitch-box {
+      padding: 2.5rem;
+      background: var(--color-dark-green);
+      border: 1px solid var(--color-dark-tint-1);
+      border-radius: 6px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pitch-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: linear-gradient(to bottom, var(--color-lime), var(--color-lime-off));
+    }
+
+    .pitch-box-label {
+      font-size: 0.578rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--color-dark-tint-2);
+      margin-bottom: 1.25rem;
+    }
+
+    .pitch-box p {
+      color: var(--color-green-off-2);
+      line-height: 1.8;
+    }
+
+    /* ============================================
+       FOOTER
+       ============================================ */
+
+    footer {
+      padding: 4rem 0;
+      border-top: 1px solid var(--color-dark-tint-1);
+      position: relative;
+    }
+
+    .footer-big-text {
+      font-family: var(--font-display);
+      font-size: clamp(4rem, 10vw, 8rem);
+      font-weight: 700;
+      color: transparent;
+      -webkit-text-stroke: 1px var(--color-dark-tint-1);
+      text-align: center;
+      margin-bottom: 3rem;
+      transition: all var(--duration) var(--ease);
+      cursor: none;
+    }
+
+    .footer-big-text:hover {
+      -webkit-text-stroke: 1px var(--color-lime);
+      text-shadow: 0 0 60px rgba(210, 255, 0, 0.1);
+    }
+
+    .footer-inner {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .footer-name {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.375rem;
+    }
+
+    .footer-info {
+      font-size: 0.75rem;
+      color: var(--color-dark-tint-2);
+      letter-spacing: 0.02em;
+    }
+
+    .footer-info a {
+      color: var(--color-dark-tint-2);
+      text-decoration: none;
+      transition: color 0.3s var(--ease);
+      cursor: none;
+    }
+
+    .footer-info a:hover { color: var(--color-lime); }
+
+    .footer-note {
+      font-size: 0.75rem;
+      color: var(--color-dark-tint-1);
+    }
+
+    /* ============================================
+       ANIMATIONS
+       ============================================ */
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity var(--duration) var(--ease), transform var(--duration) var(--ease);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ============================================
+       RESPONSIVE
+       ============================================ */
+
+    @media (max-width: 991px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .nav-links { display: none; }
+      .hero-watermark { display: none; }
+      .parallax-text { display: none; }
+    }
+
+    @media (max-width: 479px) {
+      .stats-grid { grid-template-columns: 1fr; }
+      .hero h1 { font-size: clamp(3rem, 15vw, 5rem); }
+      .projects-grid { grid-template-columns: 1fr; }
+      .filter-group { flex-wrap: wrap; }
+    }
+
+    @media (pointer: coarse) {
+      body { cursor: auto; }
+      .cursor, .cursor-trail { display: none; }
+      a, button, .project-card, .tech-chip, .filter-btn, .btn-primary, .btn-secondary, nav a, .footer-big-text, .footer-info a { cursor: auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CUSTOM CURSOR -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-trail" id="cursor-trail"></div>
+
+  <!-- GRAIN -->
+  <div class="grain"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#">AL HARRIS</a>
+    <div class="nav-links">
+      <a href="#path" class="nav-link">Path</a>
+      <a href="#work" class="nav-link">Work</a>
+      <a href="#tools" class="nav-link">Tools</a>
+      <a href="#contact" class="nav-link">Contact</a>
+    </div>
+    <span><span class="status-dot"></span>Open to opportunities</span>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-glow-orb"></div>
+    <div class="hero-watermark" data-parallax="-0.15">AL</div>
+
+    <!-- Geo decorations -->
+    <div class="geo geo-circle" style="width:300px;height:300px;top:15%;right:8%;"></div>
+    <div class="geo geo-circle" style="width:80px;height:80px;bottom:20%;right:25%;"></div>
+    <div class="geo geo-cross" style="top:25%;right:30%;">+</div>
+    <div class="geo geo-cross" style="bottom:30%;left:5%;">+</div>
+
+    <div class="container">
+      <div class="hero-eyebrow">20 years of figuring things out</div>
+      <h1>
+        <span class="scramble-text" data-final="Al">Al</span><br>
+        <span class="scramble-text" data-final="Harris">Harris</span><span class="accent">.</span>
+      </h1>
+      <p class="hero-subtitle">
+        I find broken processes and fix them — whether that means automating workflows, analyzing data, or wiring systems together. I care about the people using what I create.
+      </p>
+      <div class="hero-cta-group">
+        <a href="mailto:alharris603@gmail.com" class="btn-primary magnetic">Get in Touch &rarr;</a>
+        <a href="tel:603-801-5082" class="btn-secondary magnetic">(603) 801-5082</a>
+      </div>
+    </div>
+    <div class="scroll-indicator">
+      <span>Scroll</span>
+      <div class="line"></div>
+    </div>
+  </section>
+
+  <!-- MARQUEE 1 -->
+  <div class="marquee">
+    <div class="marquee-inner">
+      <span class="marquee-item"><span class="highlight">AUTOMATION</span> <span class="sep">&#9670;</span> ANALYTICS <span class="sep">&#9670;</span> <span class="highlight">AI</span> <span class="sep">&#9670;</span> PLATFORM OPS <span class="sep">&#9670;</span> <span class="highlight">CUSTOMER SUCCESS</span> <span class="sep">&#9670;</span> INTEGRATIONS <span class="sep">&#9670;</span> <span class="highlight">DATA</span> <span class="sep">&#9670;</span> PROCESS DESIGN <span class="sep">&#9670;</span></span>
+      <span class="marquee-item"><span class="highlight">AUTOMATION</span> <span class="sep">&#9670;</span> ANALYTICS <span class="sep">&#9670;</span> <span class="highlight">AI</span> <span class="sep">&#9670;</span> PLATFORM OPS <span class="sep">&#9670;</span> <span class="highlight">CUSTOMER SUCCESS</span> <span class="sep">&#9670;</span> INTEGRATIONS <span class="sep">&#9670;</span> <span class="highlight">DATA</span> <span class="sep">&#9670;</span> PROCESS DESIGN <span class="sep">&#9670;</span></span>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <section class="stats-section clip-reveal">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" data-count="80" data-prefix="$" data-suffix="K+">$0K+</div>
+          <div class="stat-label">Cost Savings Identified</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" data-count="1800" data-suffix="+">0+</div>
+          <div class="stat-label">Accounts in Platform</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" data-count="8" data-suffix="+">0+</div>
+          <div class="stat-label">Years at AutoVitals</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" data-count="23000" data-suffix="+">0+</div>
+          <div class="stat-label">Data Points Analyzed</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TIMELINE -->
+  <section id="path" class="timeline-section">
+    <div class="parallax-text" data-parallax="0.08">JOURNEY</div>
+
+    <!-- Geo decorations -->
+    <div class="geo geo-dot-grid" style="top:10%;right:5%;">
+      <span></span><span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <div class="geo geo-line" style="width:200px;bottom:15%;left:10%;"></div>
+
+    <div class="container">
+      <div class="section-eyebrow reveal">The Path Here</div>
+      <div class="timeline" id="timeline">
+        <div class="timeline-progress" id="timeline-progress"></div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-header">
+            <span class="timeline-year">2009</span>
+            <span class="timeline-title">Master Automotive Technician</span>
+            <span class="timeline-place">Tires Too, NH</span>
+          </div>
+          <p class="timeline-desc">Learned that problems aren't optional — they have to get solved. Invested in quality tools because the right tools make hard problems manageable.</p>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-header">
+            <span class="timeline-year">2015</span>
+            <span class="timeline-title">Managing Partner</span>
+            <span class="timeline-place">Tires Too, NH</span>
+          </div>
+          <p class="timeline-desc">Ran operations for family auto shop. Discovered AutoVitals as a customer and saw the potential of software to transform how shops operate.</p>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-header">
+            <span class="timeline-year">2017</span>
+            <span class="timeline-title">Senior Product Advisor</span>
+            <span class="timeline-place">AutoVitals (Remote)</span>
+          </div>
+          <p class="timeline-desc">Managed 300+ clients, $150K MRR. Gravitated toward the technical accounts — loved digging into data, building reports, solving the hard problems.</p>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-header">
+            <span class="timeline-year">2023</span>
+            <span class="timeline-title">CS Enablement Manager</span>
+            <span class="timeline-place">AutoVitals (Remote)</span>
+          </div>
+          <p class="timeline-desc">Implemented ChurnZero CRM. A mentor said 'get obsessed with AI' — so I did. Started dedicating hours weekly to learning, experimenting, figuring out what's possible.</p>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-header">
+            <span class="timeline-year">2024</span>
+            <span class="timeline-title">Platform Administrator</span>
+            <span class="timeline-place">AutoVitals (Remote)</span>
+          </div>
+          <p class="timeline-desc">Took ownership of Gainsight CS/PX implementation. Started connecting the dots between platforms, automation, and AI to solve operational problems.</p>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-header">
+            <span class="timeline-year">2025</span>
+            <span class="timeline-title">Solutions & Automation</span>
+            <span class="timeline-place">AutoVitals (Remote)</span>
+          </div>
+          <p class="timeline-desc">Shipped solutions across AI, analytics, and platform administration. Identified $80K+ in cost savings. Still learning every day.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE 2 -->
+  <div class="marquee marquee-reverse">
+    <div class="marquee-inner">
+      <span class="marquee-item">N8N <span class="sep">&#9670;</span> <span class="highlight">GAINSIGHT</span> <span class="sep">&#9670;</span> OPENAI <span class="sep">&#9670;</span> <span class="highlight">RETOOL</span> <span class="sep">&#9670;</span> SALESFORCE <span class="sep">&#9670;</span> <span class="highlight">PYTHON</span> <span class="sep">&#9670;</span> SQL <span class="sep">&#9670;</span> <span class="highlight">REACT</span> <span class="sep">&#9670;</span> ZENDESK <span class="sep">&#9670;</span></span>
+      <span class="marquee-item">N8N <span class="sep">&#9670;</span> <span class="highlight">GAINSIGHT</span> <span class="sep">&#9670;</span> OPENAI <span class="sep">&#9670;</span> <span class="highlight">RETOOL</span> <span class="sep">&#9670;</span> SALESFORCE <span class="sep">&#9670;</span> <span class="highlight">PYTHON</span> <span class="sep">&#9670;</span> SQL <span class="sep">&#9670;</span> <span class="highlight">REACT</span> <span class="sep">&#9670;</span> ZENDESK <span class="sep">&#9670;</span></span>
+    </div>
+  </div>
+
+  <!-- PROJECTS -->
+  <section id="work" class="projects-section">
+    <div class="parallax-text" data-parallax="-0.06" style="bottom:10%;right:-5%;">SHIPPED</div>
+    <div class="container">
+      <div class="projects-header">
+        <div class="section-eyebrow" style="margin-bottom:0">What I've Shipped</div>
+        <div class="filter-group">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="ai">AI</button>
+          <button class="filter-btn" data-filter="analytics">Analytics</button>
+          <button class="filter-btn" data-filter="platform">Platform</button>
+        </div>
+      </div>
+      <div class="projects-grid" id="projects-grid"></div>
+    </div>
+  </section>
+
+  <!-- TECH STACK -->
+  <section id="tools" class="tech-section">
+    <div class="parallax-text" data-parallax="0.05" style="top:5%;left:-10%;">TOOLS</div>
+    <div class="geo geo-circle" style="width:200px;height:200px;bottom:10%;right:3%;"></div>
+    <div class="container">
+      <div class="section-eyebrow reveal">Tools I Work With</div>
+      <p class="tech-intro reveal">
+        I'm not a traditional developer — I'm more of a "figure it out and make it work" person. Some of these I know deeply, others I'm still learning. That's the fun part.
+      </p>
+      <div class="tech-grid" id="tech-grid"></div>
+    </div>
+  </section>
+
+  <!-- PITCH -->
+  <section class="pitch-section clip-reveal" id="contact">
+    <div class="parallax-text" data-parallax="-0.04" style="top:15%;right:-15%;">LET'S GO</div>
+    <div class="container">
+      <div class="pitch-content">
+        <div class="section-eyebrow reveal">What I'm Looking For</div>
+        <div class="pitch-statements">
+          <p>A team that <span class="highlight-lime">moves fast</span> and values people who figure things out.</p>
+          <p>Work that spans <span class="highlight-off">operations, automation, and customer success</span> — I like variety.</p>
+          <p>Room to <span class="highlight-cream">keep learning</span>. I'm not done growing.</p>
+        </div>
+        <div class="pitch-box reveal">
+          <div class="pitch-box-label">In Short</div>
+          <p>
+            20 years of solving problems across automotive, customer success, and operations.
+            For the last few years, I've been teaching myself automation and AI tooling because I kept seeing
+            manual work that didn't need to be manual. I'm technical enough to ship solutions,
+            customer-focused enough to make sure they actually help people, and curious enough to keep getting better at both.
+          </p>
+          <br>
+          <p>I want to help a team win. If that sounds useful, let's talk.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-big-text magnetic">Let's talk.</div>
+      <div class="footer-inner">
+        <div>
+          <div class="footer-name">Al Harris</div>
+          <div class="footer-info">
+            <a href="mailto:alharris603@gmail.com">alharris603@gmail.com</a> &bull;
+            <a href="tel:603-801-5082">(603) 801-5082</a> &bull;
+            Manchester, NH
+          </div>
+        </div>
+        <div class="footer-note">Thanks for reading this far.</div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ============================================
+    // DATA
+    // ============================================
+
+    const projects = [
+      { id: 1, title: "AI Voice Agents for Customer Outreach", category: "ai", description: "Designed and deployed conversational AI phone agents to handle proactive customer check-ins, cancellation requests, and meeting scheduling. Integrated with n8n workflows for automated routing and CRM updates.", tech: ["Bland AI", "n8n", "OpenAI", "Webhooks"], impact: "Freed CS team for high-value conversations while maintaining touchpoints across all accounts" },
+      { id: 2, title: "Twilio Cost Analysis & Optimization", category: "analytics", description: "Analyzed $300K+ annual messaging spend to find savings opportunities. Created Retool dashboard showing segment distribution, ran regression analysis proving message length doesn't affect engagement.", tech: ["Retool", "SQL", "Data Analysis", "Stakeholder Presentation"], impact: "$80K+ annual savings identified with clear path to implementation" },
+      { id: 3, title: "Gainsight CS/PX Platform", category: "platform", description: "Implemented and administer the entire Gainsight ecosystem: dashboards, automation rules, check-in compliance tracking, advisor performance scoring, and integrations with Salesforce, Gong, and Zendesk.", tech: ["Gainsight CS", "Gainsight PX", "Salesforce", "API Integrations"], impact: "Operational backbone for CS team serving 1,800+ accounts" },
+      { id: 4, title: "Vehicle Inspection Scoring Engine", category: "analytics", description: "Analyzed 23,000+ inspections across 400+ locations to establish quality benchmarks. Created age/mileage correlation models and designed scoring system with configurable thresholds.", tech: ["Python", "Pandas", "Data Visualization", "Statistical Analysis"], impact: "Quality assurance framework applicable across franchise network" },
+      { id: 5, title: "CS Call Pattern Analysis", category: "analytics", description: "Analyzed thousands of support calls to identify automation opportunities. Categorized by topic, calculated time spent, and prioritized by deflection potential.", tech: ["Data Analysis", "React", "Process Design"], impact: "Identified 200+ hours of recoverable advisor time annually" },
+      { id: 6, title: "Help Center Chatbot", category: "ai", description: "Created intelligent search over 280+ help articles using vector embeddings. Retrieval-augmented generation provides contextual answers with source links.", tech: ["ChromaDB", "OpenAI Embeddings", "n8n", "JavaScript"], impact: "24/7 self-service support reducing ticket volume" },
+      { id: 7, title: "Meeting-to-Task Automation", category: "ai", description: "OpenAI-powered agent that extracts action items from meeting notes and creates tasks in Monday.com with appropriate context, deadlines, and assignments.", tech: ["OpenAI", "Monday.com API", "Workflow Design"], impact: "Eliminates the gap between meetings and follow-through" },
+      { id: 8, title: "Cross-Platform Integrations", category: "platform", description: "Connected critical business systems: Gong call data, Zendesk tickets, Salesforce bidirectional sync, Gmail, Google Calendar. Created unified view of customer interactions.", tech: ["REST APIs", "Webhooks", "Data Mapping", "OAuth"], impact: "Single source of truth across previously siloed systems" },
+      { id: 9, title: "Advisor Dashboards & Reporting", category: "analytics", description: "Designed and implemented reporting suite: NPS dashboards, CSAT tracking, check-in compliance, usage-drop watchlists, and performance scoring by account tier.", tech: ["Gainsight", "Retool", "SQL", "Dashboard Design"], impact: "Data-driven visibility replacing gut-feel decision making" },
+      { id: 10, title: "Internal Productivity Tools", category: "platform", description: "Collection of utilities solving everyday friction: welcome code generators, multi-shop report builders, data reconciliation tools, segment analyzers. Each started as 'I got tired of doing this manually.'", tech: ["Retool", "JavaScript", "Google Sheets", "Automation"], impact: "Hours saved weekly across multiple teams" }
+    ];
+
+    const techStack = [
+      { name: "n8n", level: "Expert" },
+      { name: "Gainsight CS/PX", level: "Expert" },
+      { name: "OpenAI API", level: "Comfortable" },
+      { name: "Retool", level: "Advanced" },
+      { name: "Salesforce", level: "Advanced" },
+      { name: "SQL", level: "Advanced" },
+      { name: "Python", level: "Working Knowledge" },
+      { name: "JavaScript", level: "Working Knowledge" },
+      { name: "React", level: "Learning" },
+      { name: "REST APIs", level: "Advanced" },
+      { name: "Zendesk", level: "Advanced" },
+      { name: "Monday.com", level: "Advanced" },
+      { name: "Data Analysis", level: "Advanced" },
+      { name: "ChromaDB", level: "Working Knowledge" },
+      { name: "Bland AI", level: "Comfortable" },
+      { name: "HTML/CSS", level: "Working Knowledge" }
+    ];
+
+    // ============================================
+    // CUSTOM CURSOR
+    // ============================================
+
+    const cursor = document.getElementById('cursor');
+    const trail = document.getElementById('cursor-trail');
+    let mouseX = 0, mouseY = 0;
+
+    document.addEventListener('mousemove', e => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      cursor.style.left = mouseX + 'px';
+      cursor.style.top = mouseY + 'px';
+      trail.style.left = mouseX + 'px';
+      trail.style.top = mouseY + 'px';
+    });
+
+    // Hover expansion on interactive elements
+    document.querySelectorAll('a, button, .project-card, .tech-chip, .filter-btn, .magnetic, .footer-big-text').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
+    });
+
+    // ============================================
+    // TEXT SCRAMBLE EFFECT
+    // ============================================
+
+    class TextScramble {
+      constructor(el) {
+        this.el = el;
+        this.chars = '!<>-_\\/[]{}—=+*^?#_ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        this.frameRequest = null;
+        this.frame = 0;
+        this.queue = [];
+        this.resolve = null;
+      }
+
+      setText(newText) {
+        const oldText = this.el.innerText;
+        const length = Math.max(oldText.length, newText.length);
+        return new Promise(resolve => {
+          this.resolve = resolve;
+          this.queue = [];
+          for (let i = 0; i < length; i++) {
+            const from = oldText[i] || '';
+            const to = newText[i] || '';
+            const start = Math.floor(Math.random() * 30);
+            const end = start + Math.floor(Math.random() * 30);
+            this.queue.push({ from, to, start, end });
+          }
+          cancelAnimationFrame(this.frameRequest);
+          this.frame = 0;
+          this.update();
+        });
+      }
+
+      update() {
+        let output = '';
+        let complete = 0;
+        for (let i = 0; i < this.queue.length; i++) {
+          let { from, to, start, end, char } = this.queue[i];
+          if (this.frame >= end) {
+            complete++;
+            output += to;
+          } else if (this.frame >= start) {
+            if (!char || Math.random() < 0.28) {
+              char = this.chars[Math.floor(Math.random() * this.chars.length)];
+              this.queue[i].char = char;
+            }
+            output += `<span style="color:var(--color-lime);opacity:0.6">${char}</span>`;
+          } else {
+            output += from;
+          }
+        }
+        this.el.innerHTML = output;
+        if (complete === this.queue.length) {
+          this.resolve();
+        } else {
+          this.frameRequest = requestAnimationFrame(() => this.update());
+          this.frame++;
+        }
+      }
+    }
+
+    // Run scramble on hero text
+    document.querySelectorAll('.scramble-text').forEach(el => {
+      const finalText = el.dataset.final;
+      el.innerText = '';
+      const scrambler = new TextScramble(el);
+      setTimeout(() => scrambler.setText(finalText), 400);
+    });
+
+    // ============================================
+    // MAGNETIC BUTTONS
+    // ============================================
+
+    document.querySelectorAll('.magnetic').forEach(el => {
+      el.addEventListener('mousemove', e => {
+        const rect = el.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        el.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+      });
+      el.addEventListener('mouseleave', () => {
+        el.style.transform = 'translate(0, 0)';
+        el.style.transition = 'transform 0.5s var(--ease)';
+        setTimeout(() => el.style.transition = '', 500);
+      });
+    });
+
+    // ============================================
+    // 3D TILT ON PROJECT CARDS
+    // ============================================
+
+    function initCardTilt(card) {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width;
+        const y = (e.clientY - rect.top) / rect.height;
+        const tiltX = (y - 0.5) * -8;
+        const tiltY = (x - 0.5) * 8;
+        card.style.transform = `perspective(800px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateY(-4px)`;
+        card.style.setProperty('--mouse-x', (x * 100) + '%');
+        card.style.setProperty('--mouse-y', (y * 100) + '%');
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(800px) rotateX(0) rotateY(0) translateY(0)';
+      });
+    }
+
+    // ============================================
+    // RENDER PROJECTS
+    // ============================================
+
+    const catClass = { ai: 'cat-ai', analytics: 'cat-analytics', platform: 'cat-platform' };
+
+    function renderProjects(filter) {
+      const grid = document.getElementById('projects-grid');
+      const filtered = filter === 'all' ? projects : projects.filter(p => p.category === filter);
+
+      grid.innerHTML = filtered.map((p, i) => `
+        <div class="project-card" data-category="${p.category}" style="transition-delay: ${i * 0.07}s">
+          <div class="project-card-inner">
+            <span class="project-category ${catClass[p.category]}">${p.category}</span>
+            <h3 class="project-title">${p.title}</h3>
+            <p class="project-desc">${p.description}</p>
+            <div class="tech-tags">
+              ${p.tech.map(t => `<span class="tech-tag">${t}</span>`).join('')}
+            </div>
+            <div class="project-impact">&darr; ${p.impact}</div>
+          </div>
+        </div>
+      `).join('');
+
+      // Init tilt + stagger reveal
+      const cards = grid.querySelectorAll('.project-card');
+      cards.forEach((card, i) => {
+        initCardTilt(card);
+        // Re-attach cursor hover
+        card.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
+        card.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
+        setTimeout(() => card.classList.add('card-visible'), 50 + i * 70);
+      });
+    }
+
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderProjects(btn.dataset.filter);
+      });
+    });
+
+    renderProjects('all');
+
+    // ============================================
+    // RENDER TECH STACK
+    // ============================================
+
+    const techGrid = document.getElementById('tech-grid');
+    techGrid.innerHTML = techStack.map((t, i) => `
+      <div class="tech-chip ${t.level === 'Expert' ? 'expert' : ''}" style="transition-delay: ${i * 0.04}s">
+        <span class="tech-chip-name">${t.name}</span>
+        <span class="tech-chip-level">${t.level}</span>
+      </div>
+    `).join('');
+
+    // Observe tech chips for staggered entrance
+    const chipObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('chip-visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    techGrid.querySelectorAll('.tech-chip').forEach(chip => {
+      chipObserver.observe(chip);
+      chip.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
+      chip.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
+    });
+
+    // ============================================
+    // SCROLL REVEAL (general)
+    // ============================================
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    // Timeline items
+    const timelineObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.2 });
+
+    document.querySelectorAll('.timeline-item').forEach(el => timelineObserver.observe(el));
+
+    // Pitch statements
+    const pitchObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.3 });
+
+    document.querySelectorAll('.pitch-statements p').forEach(el => pitchObserver.observe(el));
+
+    // Clip-path reveal sections
+    const clipObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('revealed');
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.clip-reveal').forEach(el => clipObserver.observe(el));
+
+    // ============================================
+    // ANIMATED COUNTERS
+    // ============================================
+
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !entry.target.dataset.counted) {
+          entry.target.dataset.counted = 'true';
+          const target = parseInt(entry.target.dataset.count);
+          const prefix = entry.target.dataset.prefix || '';
+          const suffix = entry.target.dataset.suffix || '';
+          const duration = 2000;
+          const increment = target / (duration / 16);
+          let current = 0;
+          const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) { current = target; clearInterval(timer); }
+            entry.target.textContent = prefix + Math.floor(current).toLocaleString() + suffix;
+          }, 16);
+        }
+      });
+    }, { threshold: 0.3 });
+
+    document.querySelectorAll('.stat-value').forEach(el => counterObserver.observe(el));
+
+    // ============================================
+    // PARALLAX ON SCROLL
+    // ============================================
+
+    const parallaxEls = document.querySelectorAll('[data-parallax]');
+
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+
+      // Parallax watermark/text
+      parallaxEls.forEach(el => {
+        const speed = parseFloat(el.dataset.parallax);
+        el.style.transform = `translateY(${scrollY * speed}px)`;
+      });
+
+      // Timeline progress bar
+      const timeline = document.getElementById('timeline');
+      if (timeline) {
+        const rect = timeline.getBoundingClientRect();
+        const windowH = window.innerHeight;
+        if (rect.top < windowH && rect.bottom > 0) {
+          const progress = Math.min(1, Math.max(0, (windowH - rect.top) / (rect.height + windowH * 0.5)));
+          document.getElementById('timeline-progress').style.height = (progress * rect.height) + 'px';
+        }
+      }
+    }, { passive: true });
+
+    // ============================================
+    // SMOOTH SCROLL NAV
+    // ============================================
+
+    document.querySelectorAll('nav a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,21 @@
+# Source resume documents — keep local only
+*.docx
+*.BACKUP.docx
+
+# One-off maintenance scripts
+update_resume.py
+
+# Design-extraction scratch output
+design-extract-output/
+
+# Claude Code local config & memory
+.claude/
+CLAUDE.md
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
