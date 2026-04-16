@@ -1116,19 +1116,36 @@
     }
 
     .footer-info {
-      font-size: 0.75rem;
-      color: var(--color-dark-tint-2);
+      font-size: 1rem;
+      color: var(--color-green-off-2);
       letter-spacing: 0.02em;
+      line-height: 1.9;
     }
 
     .footer-info a {
-      color: var(--color-dark-tint-2);
+      color: var(--color-cream);
       text-decoration: none;
+      transition: color 0.3s var(--ease);
+      cursor: none;
+      font-weight: 500;
+    }
+
+    .footer-info a:hover { color: var(--color-lime); }
+
+    .footer-contact-big {
+      display: block;
+      font-family: var(--font-display);
+      font-size: clamp(1.5rem, 3vw, 2.25rem);
+      color: var(--color-lime);
+      text-decoration: none;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
       transition: color 0.3s var(--ease);
       cursor: none;
     }
 
-    .footer-info a:hover { color: var(--color-lime); }
+    .footer-contact-big:hover { color: var(--color-cream); }
 
     .footer-note {
       font-size: 0.75rem;
@@ -1186,9 +1203,6 @@
   <div class="cursor" id="cursor"></div>
   <div class="cursor-trail" id="cursor-trail"></div>
 
-  <!-- GRAIN -->
-  <div class="grain"></div>
-
   <!-- NAV -->
   <nav>
     <a href="#">AL HARRIS</a>
@@ -1207,12 +1221,6 @@
     <div class="hero-glow-orb"></div>
     <div class="hero-watermark" data-parallax="-0.15">AL</div>
 
-    <!-- Geo decorations -->
-    <div class="geo geo-circle" style="width:300px;height:300px;top:15%;right:8%;"></div>
-    <div class="geo geo-circle" style="width:80px;height:80px;bottom:20%;right:25%;"></div>
-    <div class="geo geo-cross" style="top:25%;right:30%;">+</div>
-    <div class="geo geo-cross" style="bottom:30%;left:5%;">+</div>
-
     <div class="container">
       <div class="hero-eyebrow">20 years of figuring things out</div>
       <h1>
@@ -1228,10 +1236,6 @@
         <a href="https://www.linkedin.com/in/al-harris-08627475/" target="_blank" rel="noopener noreferrer" class="btn-secondary magnetic">LinkedIn &#8599;</a>
         <a href="https://github.com/extramediumal" target="_blank" rel="noopener noreferrer" class="btn-secondary magnetic">GitHub &#8599;</a>
       </div>
-    </div>
-    <div class="scroll-indicator">
-      <span>Scroll</span>
-      <div class="line"></div>
     </div>
   </section>
 
@@ -1269,18 +1273,6 @@
 
   <!-- TIMELINE -->
   <section id="path" class="timeline-section">
-    <div class="parallax-text" data-parallax="0.08">JOURNEY</div>
-
-    <!-- Geo decorations -->
-    <div class="geo geo-dot-grid" style="top:10%;right:5%;">
-      <span></span><span></span><span></span><span></span><span></span>
-      <span></span><span></span><span></span><span></span><span></span>
-      <span></span><span></span><span></span><span></span><span></span>
-      <span></span><span></span><span></span><span></span><span></span>
-      <span></span><span></span><span></span><span></span><span></span>
-    </div>
-    <div class="geo geo-line" style="width:200px;bottom:15%;left:10%;"></div>
-
     <div class="container">
       <div class="section-eyebrow reveal">The Path Here</div>
       <div class="timeline" id="timeline">
@@ -1359,17 +1351,8 @@
     </div>
   </section>
 
-  <!-- MARQUEE 2 -->
-  <div class="marquee marquee-reverse">
-    <div class="marquee-inner">
-      <span class="marquee-item"><span class="highlight">CLAUDE API</span> <span class="sep">&#9670;</span> GAINSIGHT <span class="sep">&#9670;</span> <span class="highlight">PYTHON</span> <span class="sep">&#9670;</span> RETOOL <span class="sep">&#9670;</span> <span class="highlight">SUPABASE</span> <span class="sep">&#9670;</span> REACT <span class="sep">&#9670;</span> <span class="highlight">SALESFORCE</span> <span class="sep">&#9670;</span> REACT NATIVE <span class="sep">&#9670;</span> <span class="highlight">SQL</span> <span class="sep">&#9670;</span></span>
-      <span class="marquee-item"><span class="highlight">CLAUDE API</span> <span class="sep">&#9670;</span> GAINSIGHT <span class="sep">&#9670;</span> <span class="highlight">PYTHON</span> <span class="sep">&#9670;</span> RETOOL <span class="sep">&#9670;</span> <span class="highlight">SUPABASE</span> <span class="sep">&#9670;</span> REACT <span class="sep">&#9670;</span> <span class="highlight">SALESFORCE</span> <span class="sep">&#9670;</span> REACT NATIVE <span class="sep">&#9670;</span> <span class="highlight">SQL</span> <span class="sep">&#9670;</span></span>
-    </div>
-  </div>
-
   <!-- PROJECTS -->
   <section id="work" class="projects-section">
-    <div class="parallax-text" data-parallax="-0.06" style="bottom:10%;right:-5%;">SHIPPED</div>
     <div class="container">
       <div class="projects-header">
         <div class="section-eyebrow" style="margin-bottom:0">What I've Shipped</div>
@@ -1387,8 +1370,6 @@
 
   <!-- TECH STACK -->
   <section id="tools" class="tech-section">
-    <div class="parallax-text" data-parallax="0.05" style="top:5%;left:-10%;">TOOLS</div>
-    <div class="geo geo-circle" style="width:200px;height:200px;bottom:10%;right:3%;"></div>
     <div class="container">
       <div class="section-eyebrow reveal">Tools I Work With</div>
       <p class="tech-intro reveal">
@@ -1400,7 +1381,6 @@
 
   <!-- PITCH -->
   <section class="pitch-section clip-reveal" id="contact">
-    <div class="parallax-text" data-parallax="-0.04" style="top:15%;right:-15%;">LET'S GO</div>
     <div class="container">
       <div class="pitch-content">
         <div class="section-eyebrow reveal">What I'm Looking For</div>
@@ -1428,12 +1408,12 @@
   <!-- FOOTER -->
   <footer>
     <div class="container">
-      <div class="footer-big-text magnetic">Let's talk.</div>
+      <a href="mailto:alharris603@gmail.com" class="footer-big-text magnetic">Let's talk.</a>
       <div class="footer-inner">
         <div>
           <div class="footer-name">Al Harris</div>
+          <a href="mailto:alharris603@gmail.com" class="footer-contact-big">alharris603@gmail.com &rarr;</a>
           <div class="footer-info">
-            <a href="mailto:alharris603@gmail.com">alharris603@gmail.com</a> &bull;
             <a href="tel:603-801-5082">(603) 801-5082</a> &bull;
             Goffstown, NH &bull;
             <a href="https://www.linkedin.com/in/al-harris-08627475/" target="_blank" rel="noopener noreferrer">LinkedIn</a> &bull;
